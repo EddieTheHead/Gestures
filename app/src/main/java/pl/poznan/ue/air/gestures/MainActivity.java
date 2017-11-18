@@ -7,16 +7,20 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
-
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import pl.poznan.ue.air.gestures.model.Gesture;
+import pl.poznan.ue.air.gestures.model.Gesture.Actions;
 import pl.poznan.ue.air.gestures.model.GestureDatabase;
 import io.github.cawfree.dtw.alg.DTW;
 
@@ -34,16 +38,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Boolean recordingMovement = false;
     private SensorManager sensorManager;
 
-    /** Converts a List of Floats into a primitive equivalent. */
-    private static final float[] primitive(final List<Float> pList) {
-        // Declare the Array.
+    private static float[] primitive(final List<Float> pList) {
         final float[] lT = new float[pList.size()];
-        // Iterate the List.
         for(int i = 0; i < pList.size(); i++) {
-            // Buffer the Element.
             lT[i] = pList.get(i);
         }
-        // Return the Array.
         return lT;
     }
 
@@ -93,11 +92,38 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         return true;
                     }
                     case MotionEvent.ACTION_UP:{
-                        if(findMatchingGesture() != null)
-                            Toast.makeText(MainActivity.this, ("Success"), Toast.LENGTH_LONG).show();
-                        else Toast.makeText(MainActivity.this, ("Not found"), Toast.LENGTH_LONG).show();
+                        Gesture gesture = findMatchingGesture();
+                        if(gesture == null) Toast.makeText(MainActivity.this,
+                                ("Not found"), Toast.LENGTH_LONG).show();
                         //// TODO: 2017-11-18 Run action associated with found gesture
-                        //// TODO: 2017-11-18 Add shplash screen with action symbol
+                        final Actions action = gesture.getAction();
+                        switch (action){
+                            case NEXT_SLIDE: {
+                                LayoutInflater inflater = getLayoutInflater();
+                                View layout = inflater.inflate(R.layout.action_next_slide_invoked_toast,
+                                        (ViewGroup) findViewById(R.id.action_next_slide_invoked_toast_container));
+
+                                TextView text = (TextView) layout.findViewById(R.id.text);
+                                text.setText("Action Next Slide Invoked");
+                                Toast toast = new Toast(getApplicationContext());
+                                toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                                toast.setDuration(Toast.LENGTH_LONG);
+                                toast.setView(layout);
+                                toast.show();
+                            } break;
+                            case PREV_SLIDE:
+                                LayoutInflater inflater = getLayoutInflater();
+                                View layout = inflater.inflate(R.layout.action_prev_slide_invoked_toast,
+                                        (ViewGroup) findViewById(R.id.action_prev_slide_invoked_toast_container));
+
+                                TextView text = (TextView) layout.findViewById(R.id.text);
+                                text.setText("Action Prev Slide Invoked");
+                                Toast toast = new Toast(getApplicationContext());
+                                toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                                toast.setDuration(Toast.LENGTH_LONG);
+                                toast.setView(layout);
+                                toast.show();
+                        }
                         return true;
                     }
                 }
