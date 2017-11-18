@@ -1,5 +1,7 @@
 package pl.poznan.ue.air.gestures.model;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 
 
@@ -11,6 +13,11 @@ public class GestureDatabase {
 
     public GestureDatabase(ArrayList<Gesture> data) {
         this.data = data;
+    }
+
+    public GestureDatabase fromJSON(String json){
+        Gson gson = new Gson();
+        return gson.fromJson(json, GestureDatabase.class);
     }
 
     public GestureDatabase() {
@@ -46,5 +53,9 @@ public class GestureDatabase {
         }
         return titles;
     }
-    // TODO: 2017-11-18  save database to JSON file
+
+    public String toJSON(){
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
 }

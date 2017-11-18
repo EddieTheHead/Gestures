@@ -19,11 +19,15 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.widget.Toast;
+
+import java.io.FileOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 import pl.poznan.ue.air.gestures.model.Gesture;
 import pl.poznan.ue.air.gestures.model.GestureDatabase;
+import pl.poznan.ue.air.gestures.services.FileAccessService;
+
 public class GestureEditActivity extends AppCompatActivity
         implements ConfirmSaveDialogFragment.ConfirmSaveDialogListener,
         ConfirmRemoveDialogFragment.ConfirmRemoveDialogListener,
@@ -150,6 +154,8 @@ public class GestureEditActivity extends AppCompatActivity
     public void onDialogSavePositiveClick(DialogFragment dialog) {
         if(editingExisting) database.update(currentPosition, currentElement);
         else database.put(currentElement);
+        FileAccessService fas = new FileAccessService(database);
+        fas.saveDatabaseToJsonFile();
         super.onBackPressed();
     }
 
