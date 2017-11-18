@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="pl.poznan.ue.air.gestures.GestureEditActivity">
+
+    <LinearLayout
+        android:layout_width="370dp"
+        android:layout_height="490dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="9dp"
+        tools:layout_editor_absoluteY="5dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Name:" />
+
+        <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Action:" />
+
+        <Spinner
+            android:id="@+id/spinnerAction"
+            android:layout_width="match_parent"
+            android:layout_height="77dp" />
+
+        <Button
+            android:id="@+id/buttonTrain"
+            android:layout_width="match_parent"
+            android:layout_height="174dp"
+            android:text="Press and hold to train gesture" />
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete Gesture" />
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

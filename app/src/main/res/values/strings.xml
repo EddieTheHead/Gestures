@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Gestures</string>
+    <string name="title_activity_gestures_gallery">Saved gestures</string>
+    <string name="go_to_gestures_gallery_button">Defined gestures</string>
+    <string name="title_activity_gesture_edit">Edit Gesture</string>
+    <string name="save_changes_question">Save changes?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="cancel">Cancel</string>
+    <string name="new_gesture_name">My Gesture</string>
+    <string name="remove_question">Delete gesture?</string>
+</resources>
