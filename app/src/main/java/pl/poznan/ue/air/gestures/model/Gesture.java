@@ -1,6 +1,8 @@
 package pl.poznan.ue.air.gestures.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,6 +22,9 @@ public class Gesture implements Serializable {
     public Gesture(String title) {
         this.title = title;
         this.action = Actions.NEXT_SLIDE;
+        traceX = new ArrayList<>(64);
+        traceY = new ArrayList<>(64);
+        traceZ = new ArrayList<>(64);
     }
 
     public enum Actions {NEXT_SLIDE, PREV_SLIDE};

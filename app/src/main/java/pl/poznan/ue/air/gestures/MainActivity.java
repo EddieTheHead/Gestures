@@ -58,14 +58,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     dtw.compute(primitive(accelerationZ),primitive(g.getTraceZ())).getDistance() < TRESHOLD){
                 return g;
             }
-            else {
-                double x = dtw.compute(primitive(accelerationX),primitive(g.getTraceX())).getDistance();
-                double y = dtw.compute(primitive(accelerationY),primitive(g.getTraceY())).getDistance();
-                double z = dtw.compute(primitive(accelerationZ),primitive(g.getTraceZ())).getDistance();
-                Toast.makeText(MainActivity.this, ("x " + x + " y " + y + " z " + z + " s1 "
-                        + accelerationX.size() + " s2 "
-                        + g.getTraceX().size()) , Toast.LENGTH_LONG).show();
-            }
+//            else {
+//                double x = dtw.compute(primitive(accelerationX),primitive(g.getTraceX())).getDistance();
+//                double y = dtw.compute(primitive(accelerationY),primitive(g.getTraceY())).getDistance();
+//                double z = dtw.compute(primitive(accelerationZ),primitive(g.getTraceZ())).getDistance();
+//                Toast.makeText(MainActivity.this, ("x " + x + " y " + y + " z " + z + " s1 "
+//                        + accelerationX.size() + " s2 "
+//                        + g.getTraceX().size()) , Toast.LENGTH_LONG).show();
+//            }
         }
         return null;
     }
@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
         Button recordButton = findViewById(R.id.buttonRecognise);
         recordButton.setOnTouchListener(new View.OnTouchListener() {
+
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getActionMasked()){
@@ -93,8 +94,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     }
                     case MotionEvent.ACTION_UP:{
                         Gesture gesture = findMatchingGesture();
-                        if(gesture == null) Toast.makeText(MainActivity.this,
-                                ("Not found"), Toast.LENGTH_LONG).show();
+                        if(gesture == null) {
+                            Toast.makeText(MainActivity.this, "Not found", Toast.LENGTH_LONG).show();
+                            return true;
+                        }
                         //// TODO: 2017-11-18 Run action associated with found gesture
                         final Actions action = gesture.getAction();
                         switch (action){
@@ -110,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                 toast.setDuration(Toast.LENGTH_LONG);
                                 toast.setView(layout);
                                 toast.show();
-                            } break;
+                            } return true;
                             case PREV_SLIDE:
                                 LayoutInflater inflater = getLayoutInflater();
                                 View layout = inflater.inflate(R.layout.action_prev_slide_invoked_toast,
@@ -123,11 +126,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                 toast.setDuration(Toast.LENGTH_LONG);
                                 toast.setView(layout);
                                 toast.show();
+                                return true;
                         }
-                        return true;
                     }
                 }
-                return false;
+                return true;
             }
         });
         accelerationX = new ArrayList<>(64);
@@ -135,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         accelerationZ = new ArrayList<>(64);
 
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
