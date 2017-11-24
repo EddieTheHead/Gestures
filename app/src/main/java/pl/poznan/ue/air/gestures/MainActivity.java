@@ -99,8 +99,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             protected Object doInBackground(Object[] objects) {
                                 final Gesture gesture = findMatchingGesture();
                                 if (gesture == null) {
-                                    Toast.makeText(MainActivity.this, "Not found", Toast.LENGTH_LONG).show();
-                                    return true;
+                                    MainActivity.this.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(MainActivity.this, "Not found", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                    return null;
                                 }
                                 //// TODO: 2017-11-18 Run action associated with found gesture
                                 final Actions action = gesture.getAction();
@@ -154,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     }
                     return true;
                 }
-                return false;
+                return true;
             }
         });
         accelerationX = new ArrayList<>(64);
