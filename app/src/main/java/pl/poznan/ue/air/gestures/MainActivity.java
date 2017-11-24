@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -30,7 +31,6 @@ import io.github.cawfree.dtw.alg.DTW;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private GestureDatabase database;
-    private Button toGesturesGalleryButton;
 
     private List<Float> accelerationX;
     private List<Float> accelerationY;
@@ -70,7 +70,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return null;
     }
 
-    public void init(){
+    public void init() {
+        Button toGesturesGalleryButton;
         toGesturesGalleryButton = findViewById(R.id.toGesturesGallery);
         toGesturesGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getActionMasked()){
+                switch (motionEvent.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN: {
                         recordingMovement = true;
                         accelerationX.clear();
@@ -92,51 +93,73 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         accelerationZ.clear();
                         return true;
                     }
-                    case MotionEvent.ACTION_UP:{
-                        Gesture gesture = findMatchingGesture();
-                        if(gesture == null) {
-                            Toast.makeText(MainActivity.this, "Not found", Toast.LENGTH_LONG).show();
-                            return true;
-                        }
-                        //// TODO: 2017-11-18 Run action associated with found gesture
-                        final Actions action = gesture.getAction();
-                        switch (action){
-                            case NEXT_SLIDE: {
-                                LayoutInflater inflater = getLayoutInflater();
-                                View layout = inflater.inflate(R.layout.action_next_slide_invoked_toast,
-                                        (ViewGroup) findViewById(R.id.action_next_slide_invoked_toast_container));
+                    case MotionEvent.ACTION_UP: {
+                        final AsyncTask task = new AsyncTask() {
+                            @Override
+                            protected Object doInBackground(Object[] objects) {
+                                final Gesture gesture = findMatchingGesture();
+                                if (gesture == null) {
+                                    Toast.makeText(MainActivity.this, "Not found", Toast.LENGTH_LONG).show();
+                                    return true;
+                                }
+                                //// TODO: 2017-11-18 Run action associated with found gesture
+                                final Actions action = gesture.getAction();
+                                switch (action) {
+                                    case NEXT_SLIDE: {
 
-                                TextView text = (TextView) layout.findViewById(R.id.text);
-                                text.setText("Action Next Slide Invoked");
-                                Toast toast = new Toast(getApplicationContext());
-                                toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-                                toast.setDuration(Toast.LENGTH_LONG);
-                                toast.setView(layout);
-                                toast.show();
-                            } return true;
-                            case PREV_SLIDE:
-                                LayoutInflater inflater = getLayoutInflater();
-                                View layout = inflater.inflate(R.layout.action_prev_slide_invoked_toast,
-                                        (ViewGroup) findViewById(R.id.action_prev_slide_invoked_toast_container));
+                                        MainActivity.this.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                LayoutInflater inflater = getLayoutInflater();
+                                                View layout = inflater.inflate(R.layout.action_next_slide_invoked_toast,
+                                                        (ViewGroup) findViewById(R.id.action_next_slide_invoked_toast_container));
 
-                                TextView text = (TextView) layout.findViewById(R.id.text);
-                                text.setText("Action Prev Slide Invoked");
-                                Toast toast = new Toast(getApplicationContext());
-                                toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-                                toast.setDuration(Toast.LENGTH_LONG);
-                                toast.setView(layout);
-                                toast.show();
-                                return true;
-                        }
+                                                TextView text = layout.findViewById(R.id.text);
+                                                text.setText("Found Gesture: " +
+                                                        gesture.getTitle() + ": " + "action Next Slide Invoked");
+                                                Toast toast = new Toast(getApplicationContext());
+                                                toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                                                toast.setDuration(Toast.LENGTH_LONG);
+                                                toast.setView(layout);
+                                                toast.show();
+                                            }
+                                        });
+                                        break;
+                                    }
+                                    case PREV_SLIDE: {
+                                        MainActivity.this.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                LayoutInflater inflater = getLayoutInflater();
+                                                View layout = inflater.inflate(R.layout.action_prev_slide_invoked_toast,
+                                                        (ViewGroup) findViewById(R.id.action_prev_slide_invoked_toast_container));
+
+                                                TextView text = layout.findViewById(R.id.text);
+                                                text.setText("Found Gesture: " +
+                                                        gesture.getTitle() + ": " +"action Prev Slide Invoked");
+                                                Toast toast = new Toast(getApplicationContext());
+                                                toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                                                toast.setDuration(Toast.LENGTH_LONG);
+                                                toast.setView(layout);
+                                                toast.show();
+                                            }
+                                        });
+                                        break;
+                                    }
+                                }
+                                return null;
+                            }
+                        };
+                        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void)null);
                     }
+                    return true;
                 }
-                return true;
+                return false;
             }
         });
         accelerationX = new ArrayList<>(64);
         accelerationY = new ArrayList<>(64);
         accelerationZ = new ArrayList<>(64);
-
     }
 
 
