@@ -30,7 +30,6 @@ import pl.poznan.ue.air.gestures.model.GestureDatabase;
 import io.github.cawfree.dtw.alg.DTW;
 
 
-// TODO: 2017-11-18 Add communication with PC
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -85,11 +84,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 startActivity(galleryView);
             }
         });
-        Button recordButton = findViewById(R.id.buttonRecognise);
+        final Button recordButton = findViewById(R.id.buttonRecognise);
         recordButton.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+
                 switch (motionEvent.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN: {
                         recordingMovement = true;
@@ -107,12 +107,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                     MainActivity.this.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Toast.makeText(MainActivity.this, "Not found", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(MainActivity.this, "Not found", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                     return null;
                                 }
-                                //// TODO: 2017-11-18 Run action associated with found gesture
                                 final Actions action = gesture.getAction();
                                 switch (action) {
                                     case NEXT_SLIDE: {
