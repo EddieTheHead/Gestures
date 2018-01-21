@@ -1,5 +1,6 @@
 package pl.poznan.ue.air.gestures;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -17,6 +18,9 @@ import android.widget.Toast;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return null;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public void init() {
         Button toGesturesGalleryButton;
         toGesturesGalleryButton = findViewById(R.id.toGesturesGallery);
@@ -115,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                         MainActivity.this.runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
+                                                sendSign("n");
                                                 LayoutInflater inflater = getLayoutInflater();
                                                 View layout = inflater.inflate(R.layout.action_next_slide_invoked_toast,
                                                         (ViewGroup) findViewById(R.id.action_next_slide_invoked_toast_container));
@@ -135,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                         MainActivity.this.runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
+                                                sendSign("p");
                                                 LayoutInflater inflater = getLayoutInflater();
                                                 View layout = inflater.inflate(R.layout.action_prev_slide_invoked_toast,
                                                         (ViewGroup) findViewById(R.id.action_prev_slide_invoked_toast_container));
@@ -160,6 +167,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     return true;
                 }
                 return true;
+            }
+        });
+
+        Button showConnectionSettings = findViewById(R.id.buttonConnectionSettings);
+
+        showConnectionSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent connSett = new Intent(MainActivity.this, ConnectionSettingsActivity.class);
+                startActivity(connSett);
             }
         });
         accelerationX = new ArrayList<>(64);
@@ -209,4 +226,51 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onAccuracyChanged(Sensor s, int acc){ }
+
+
+    public void sendSign( String message)
+    {
+        message = message + '\n';
+        BackgroundTask backgroundTask = new BackgroundTask();
+        backgroundTask.setIP(((GlobalDataApplication) this.getApplication()).getIP());
+        backgroundTask.setPort(Integer.parseInt(
+                ((GlobalDataApplication) this.getApplication()).getPort()));
+        backgroundTask.execute(message);
+    }
+
+    class BackgroundTask extends AsyncTask<String,Void,Void> {
+
+        Socket socket;
+        PrintWriter printWriter;
+
+        private void setPort(int port) {
+            Port = port;
+        }
+
+        private void setIP(String IP) {
+            this.IP = IP;
+        }
+
+        int Port = 8888;
+        String IP = "192.168.1.8";
+
+        @Override
+        protected Void doInBackground(String... voids) {
+
+            try
+            {
+                String message = voids[0];
+                socket = new Socket(IP,Port);
+                printWriter = new PrintWriter(socket.getOutputStream());
+                printWriter.write(message);
+                printWriter.flush();
+                printWriter.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 }

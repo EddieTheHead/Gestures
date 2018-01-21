@@ -12,6 +12,25 @@ import pl.poznan.ue.air.gestures.services.FileAccessService;
 public class GlobalDataApplication extends Application {
     public GestureDatabase database;
 
+    public String getIP() {
+        return IP;
+    }
+
+    public void setIP(String IP) {
+        this.IP = IP;
+    }
+
+    public String getPort() {
+        return Port;
+    }
+
+    public void setPort(String port) {
+        Port = port;
+    }
+
+    public String IP = "192.168.1.8";
+    public String Port = "8888";
+
     public GlobalDataApplication() {
         FileAccessService fas = new FileAccessService();
         this.database = fas.readDataBaseFromJsonFile();

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pl.poznan.ue.air.gestures">
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:name=".GlobalDataApplication"
         android:allowBackup="true"
@@ -21,7 +25,8 @@
             android:name=".GesturesGalleryActivity"
             android:label="@string/title_activity_gestures_gallery"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".GestureEditActivity"></activity>
+        <activity android:name=".GestureEditActivity" />
+        <activity android:name=".ConnectionSettingsActivity"></activity>
     </application>
 
 </manifest>

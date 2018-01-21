@@ -54,14 +54,19 @@ public class FileAccessService {
 
     public void saveDatabaseToJsonFile(){
         String jsonString = database.toJSON();
-        String pathStr = Environment.getExternalStorageDirectory() + File.separator  + "SavedGestures";
-        final File path = new File(pathStr);
-        if(!path.exists()) path.mkdirs();
+        String pathStr = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
+                //+ File.separator  + "SavedGestures" + File.separator;
+        //File path = new File(pathStr);
+        //if(!path.mkdirs()) return;
 
-        final File file = new File(path, "Gestures.JSON");
+       // final File file = new File(pathStr, "Gestures.JSON");
+        String state = Environment.getExternalStorageState();
+        if(!state.equals(Environment.MEDIA_MOUNTED)) return;
+        String filename = pathStr + File.separator + "Gestures.json";
         try {
-            file.createNewFile();
-            FileOutputStream fOut = new FileOutputStream(file);
+            //if(!file.exists())
+            //    file.createNewFile();
+            FileOutputStream fOut = new FileOutputStream(filename);
             OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
             myOutWriter.append(jsonString);
             myOutWriter.close();
